@@ -23,11 +23,13 @@ HAL_StatusTypeDef SUART_init(SUART_HandleTypeDef *hsuart) {
     hsuart->Instance->rx_bit_shift = 0;
     hsuart->Instance->rx_bit_counter = 0;
     hsuart->Instance->rx_completed = 0;
+
+    return HAL_OK;
 }
 
 HAL_StatusTypeDef SUART_handler(SUART_HandleTypeDef *hsuart) {
     if (hsuart->Init.tx_enabled) {
-        if (hsuart->Instance->timer == 0 && !hsuart->Instance->completed) {
+        if (hsuart->Instance->timer == 0 && !hsuart->Instance->tx_completed) {
             tx_process(hsuart);
         }
     }
@@ -43,6 +45,8 @@ HAL_StatusTypeDef SUART_handler(SUART_HandleTypeDef *hsuart) {
 
     hsuart->Instance->timer += 1;
     if (hsuart->Instance->timer > 1) { hsuart->Instance->timer = 0; }
+
+    return HAL_OK;
 }
 
 HAL_StatusTypeDef SUART_write(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t len) {
@@ -73,11 +77,11 @@ HAL_StatusTypeDef SUART_read(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t 
 
 
 uint8_t SUART_tx_available(SUART_HandleTypeDef *hsuart) {
-    return hsuart->tx_completed;
+    return hsuart->Instance->tx_completed;
 }
 
 uint8_t SUART_rx_available(SUART_HandleTypeDef *hsuart) {
-    return hsuart->rx_index;
+    return hsuart->Instance->rx_index;
 }
 
 uint8_t read_rx_pin(SUART_HandleTypeDef *hsuart) {

@@ -1,6 +1,10 @@
 #ifndef _SUART_H_
 #define _SUART_H_
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
 #include "main.h"
 #include "stm32f1xx_hal_def.h"
 
@@ -9,11 +13,11 @@
 
 typedef struct {
     uint8_t tx_enabled;
-    uint8_t tx_port;
+    GPIO_TypeDef *tx_port;
     uint8_t tx_pin;
 
     uint8_t rx_enabled;
-    uint8_t rx_port;
+    GPIO_TypeDef *rx_port;
     uint8_t rx_pin;
 
 } SUART_InitTypeDef;
@@ -26,13 +30,13 @@ typedef struct {
     uint8_t tx_size;
     uint8_t tx_bit_shift;
     uint8_t tx_bit_counter;
-    uint8_t tx_complete;
+    uint8_t tx_completed;
 
     uint8_t rx_buf[SUART_RX_BUF_LEN];
     uint8_t rx_index;
     uint8_t rx_bit_shift;
     uint8_t rx_bit_counter;
-    uint8_t rx_complete;
+    uint8_t rx_completed;
 
 } SUART_TypeDef; 
 
@@ -49,5 +53,9 @@ HAL_StatusTypeDef SUART_read(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t 
 
 uint8_t SUART_tx_available(SUART_HandleTypeDef *hsuart);
 uint8_t SUART_rx_available(SUART_HandleTypeDef *hsuart);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _SUART_H_ */
