@@ -7,9 +7,9 @@ void write_tx_pin(SUART_HandleTypeDef *hsuart, uint8_t state);
 void tx_process(SUART_HandleTypeDef *hsuart);
 void rx_process(SUART_HandleTypeDef *hsuart, uint8_t state);
 
-HAL_StatusTypeDef SUART_init(SUART_HandleTypeDef *hsuart) {
-    if (hsuart->Init.tx_enabled && (!hsuart->Init.tx_port || !hsuart->Init.tx_pin)) { return HAL_ERROR; }
-    if (hsuart->Init.rx_enabled && (!hsuart->Init.rx_port || !hsuart->Init.rx_pin)) { return HAL_ERROR; }
+HAL_StatusTypeDef HAL_SUART_Init(SUART_HandleTypeDef *hsuart) {
+    if (hsuart->Init.TX_ENABLED && (!hsuart->Init.TX_PORT || !hsuart->Init.TX_PIN)) { return HAL_ERROR; }
+    if (hsuart->Init.RX_ENABLED && (!hsuart->Init.RX_PORT || !hsuart->Init.RX_PIN)) { return HAL_ERROR; }
 
     hsuart->Instance->timer = 0;
 
@@ -27,14 +27,14 @@ HAL_StatusTypeDef SUART_init(SUART_HandleTypeDef *hsuart) {
     return HAL_OK;
 }
 
-HAL_StatusTypeDef SUART_handler(SUART_HandleTypeDef *hsuart) {
-    if (hsuart->Init.tx_enabled) {
+HAL_StatusTypeDef HAL_SUART_Handler(SUART_HandleTypeDef *hsuart) {
+    if (hsuart->Init.TX_ENABLED) {
         if (hsuart->Instance->timer == 0 && !hsuart->Instance->tx_completed) {
             tx_process(hsuart);
         }
     }
 
-    if (hsuart->Init.rx_enabled) {
+    if (hsuart->Init.RX_ENABLED) {
         if (hsuart->Instance->timer == 1) {
             rx_process(hsuart, read_rx_pin(hsuart));
         }
@@ -49,8 +49,8 @@ HAL_StatusTypeDef SUART_handler(SUART_HandleTypeDef *hsuart) {
     return HAL_OK;
 }
 
-HAL_StatusTypeDef SUART_write(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t len) {
-    if (!hsuart->Init.tx_enabled) { return HAL_ERROR; }
+HAL_StatusTypeDef HAL_SUART_Write(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t len) {
+    if (!hsuart->Init.TX_ENABLED) { return HAL_ERROR; }
     if (len >= sizeof(hsuart->Instance->tx_buf)) { return HAL_ERROR; }
 
     memcpy(hsuart->Instance->tx_buf, buf, len);
@@ -63,8 +63,8 @@ HAL_StatusTypeDef SUART_write(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t
     return HAL_OK;
 }
 
-HAL_StatusTypeDef SUART_read(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t len) {
-    if (!hsuart->Init.rx_enabled) { return HAL_ERROR; }
+HAL_StatusTypeDef HAL_SUART_Read(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t len) {
+    if (!hsuart->Init.RX_ENABLED) { return HAL_ERROR; }
     if (len > hsuart->Instance->rx_index) { return HAL_ERROR; }
 
     memcpy(buf, hsuart->Instance->rx_buf, len);
@@ -76,20 +76,20 @@ HAL_StatusTypeDef SUART_read(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t 
 }
 
 
-uint8_t SUART_tx_available(SUART_HandleTypeDef *hsuart) {
+uint8_t HAL_SUART_Tx_Available(SUART_HandleTypeDef *hsuart) {
     return hsuart->Instance->tx_completed;
 }
 
-uint8_t SUART_rx_available(SUART_HandleTypeDef *hsuart) {
+uint8_t HAL_SUART_Rx_Available(SUART_HandleTypeDef *hsuart) {
     return hsuart->Instance->rx_index;
 }
 
 uint8_t read_rx_pin(SUART_HandleTypeDef *hsuart) {
-    return HAL_GPIO_ReadPin(hsuart->Init.rx_port, hsuart->Init.rx_pin);
+    return HAL_GPIO_ReadPin(hsuart->Init.RX_PORT, hsuart->Init.RX_PIN);
 }
 
 void write_tx_pin(SUART_HandleTypeDef *hsuart, uint8_t state) {
-    HAL_GPIO_WritePin(hsuart->Init.tx_port, hsuart->Init.tx_pin, state);
+    HAL_GPIO_WritePin(hsuart->Init.TX_PORT, hsuart->Init.TX_PIN, state);
 }
 
 void tx_process(SUART_HandleTypeDef *hsuart) {

@@ -12,13 +12,13 @@ extern "C"{
 #define SUART_RX_BUF_LEN 128
 
 typedef struct {
-    uint8_t tx_enabled;
-    GPIO_TypeDef *tx_port;
-    uint8_t tx_pin;
+    uint8_t TX_ENABLED;
+    GPIO_TypeDef *TX_PORT;
+    uint16_t TX_PIN;
 
-    uint8_t rx_enabled;
-    GPIO_TypeDef *rx_port;
-    uint8_t rx_pin;
+    uint8_t RX_ENABLED;
+    GPIO_TypeDef *RX_PORT;
+    uint16_t RX_PIN;
 
 } SUART_InitTypeDef;
 
@@ -46,13 +46,13 @@ typedef struct {
 
 } SUART_HandleTypeDef;
 
-HAL_StatusTypeDef SUART_init(SUART_HandleTypeDef *hsuart);
-HAL_StatusTypeDef SUART_handler(SUART_HandleTypeDef *hsuart);
-HAL_StatusTypeDef SUART_write(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t len);
-HAL_StatusTypeDef SUART_read(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t len);
+HAL_StatusTypeDef HAL_SUART_Init(SUART_HandleTypeDef *hsuart);
+HAL_StatusTypeDef HAL_SUART_Handler(SUART_HandleTypeDef *hsuart);
+HAL_StatusTypeDef HAL_SUART_Write(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t len);
+HAL_StatusTypeDef HAL_SUART_Read(SUART_HandleTypeDef *hsuart, uint8_t *buf, uint8_t len);
 
-uint8_t SUART_tx_available(SUART_HandleTypeDef *hsuart);
-uint8_t SUART_rx_available(SUART_HandleTypeDef *hsuart);
+uint8_t HAL_SUART_Tx_Available(SUART_HandleTypeDef *hsuart);
+uint8_t HAL_SUART_Rx_Available(SUART_HandleTypeDef *hsuart);
 
 #ifdef __cplusplus
 }
